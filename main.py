@@ -4,6 +4,7 @@ from tkinter import ttk
 from PIL import Image,ImageTk
 import csv
 from tkinter import filedialog
+import backend
 
 
 
@@ -61,6 +62,7 @@ tk.Label(frame_2,text="___________",bg="white").place(relx=0.0,rely=0.034,relwid
 
 # function to display a new frame for the menu and its widgets
 def frame_change():
+
     # remove button_7 from the parent Frame
     button_7.place_forget()
     # new frame for the menu
@@ -80,6 +82,14 @@ def frame_change():
     treeview.column("Meal quantity",width=150,anchor=tk.CENTER)
 
     treeview.pack(fill="both",expand=True)
+
+    # load data from database to the treeview
+    views = backend.view()
+    for view in views:
+        treeview.insert("",tk.END,values=view)
+
+  
+   
 
     def back():
         button.place_forget()
@@ -195,10 +205,16 @@ def add():
 
     def save():
         names = []
-        print(names)
         name = name_entry.get()
         name = name.strip()
         cotegory_names()
+        # ______________________
+        meal_name = title.get()
+        meal_price = price.get()
+        print(meal_name)
+
+        backend.insert(name=meal_name,price=meal_price,image_path="images/add_1.jpeg")
+
 
         with open("file.csv") as file :
             files = file.readlines()
@@ -214,6 +230,7 @@ def add():
             with open("file.csv","a") as file:
                 file = file.write(f"{name}\n")
             cotegory_names()
+        window.destroy()
 
     save_button = tk.Button(window,text="Save",width=12,relief=tk.GROOVE,command=save)
     save_button.place(x=390,y=450)
@@ -232,7 +249,6 @@ add_button.place(relx=0.0060,rely=0.041)
 
 
 
-
-
+backend.connect()
 cotegory_names()
 app.mainloop()
